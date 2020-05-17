@@ -1,5 +1,7 @@
 #include <iostream>
 #include <unordered_map>
+#include <map>
+#include <string>
 
 #include "inventory.h"
 #include "resource.h"
@@ -31,7 +33,7 @@ int main(int argc, const char** argv) {
         { "Mineros", &mineros }
     };
 
-    std::unordered_map<Resource, RecolectorHandler*> recolectores_por_recurso {
+    std::map<Resource, RecolectorHandler*> recolectores_por_recurso {
         { Resource::Trigo, &agricultores },
         { Resource::Madera, &leniadores },
         { Resource::Carbon, &mineros },

@@ -11,7 +11,7 @@ private:
     Inventory& inventory;
     const int TIEMPO_TRABAJO = 60;
 public:
-    Producer(Inventory& inventory);
+    explicit Producer(Inventory& inventory);
     void run() override;
     void producir();
     ~Producer() {}

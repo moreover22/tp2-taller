@@ -38,7 +38,7 @@ void BlockingQueue::done() {
 
 void BlockingQueue::print_queue() {
     printf("-----------------------------\n");
-    for(auto& q: resources) {
+    for (auto& q: resources) {
         printf("%s\n", ResourceName::get_name(q).c_str());
     }
     printf("-----------------------------\n");

@@ -1,4 +1,5 @@
 #include <fstream>
+#include <string>
 
 #include "workerparser.h"
 
@@ -9,7 +10,7 @@ void WorkerParser::parse() {
         std::getline(stream, tipo_trabajador, DELIMITER);
         std::getline(stream, cantidad);
         quantities[tipo_trabajador] = std::stoi(cantidad);
-    } while(!tipo_trabajador.empty()); 
+    } while (!tipo_trabajador.empty()); 
 }
 
 size_t WorkerParser::get_quantity(const std::string& type) const {

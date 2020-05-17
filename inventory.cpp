@@ -19,6 +19,4 @@ void Inventory::show() const {
                                                             resource.second);
     }
     printf("=================================\n\n");
-
 }
-

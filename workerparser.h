@@ -2,6 +2,7 @@
 #define WORKERPARSER_H
 
 #include <unordered_map>
+#include <string>
 
 class WorkerParser {
 private:
@@ -9,7 +10,7 @@ private:
     std::unordered_map<std::string, size_t> quantities; 
     std::ifstream& stream;
 public:
-    WorkerParser(std::ifstream& stream): stream(stream) {}
+    explicit WorkerParser(std::ifstream& stream): stream(stream) {}
     void parse();
     size_t get_quantity(const std::string& type) const;
 };

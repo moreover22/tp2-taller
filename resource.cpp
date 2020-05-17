@@ -1,5 +1,6 @@
 #include "resource.h"
 #include <mutex>
+#include <string>
 
 const std::unordered_map<Resource, std::string> ResourceName::names {
     { Resource::Carbon, "Carbón" },

@@ -14,8 +14,7 @@ private:
     std::condition_variable cola_cv;
     bool queue_done;
 public:
-    BlockingQueue() : 
-        queue_done(false) {};
+    BlockingQueue() : queue_done(false) {}
     void push(Resource resource);
     Resource pop();
     bool is_done();

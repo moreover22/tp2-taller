@@ -15,7 +15,8 @@ private:
     Inventory& inventory;
     std::vector<Recolector*> recolectores;
 public:
-    RecolectorHandler(Inventory& inventory) : cola(), inventory(inventory) {}    
+    explicit RecolectorHandler(Inventory& inventory) 
+        : cola(), inventory(inventory) {}
     void create_recolecotors(size_t n);
     void join();
 
