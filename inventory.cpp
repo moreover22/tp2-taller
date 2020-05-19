@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "inventory.h"
+#include "resource.h"
 
 Inventory::Inventory() {
     resources.insert({Resource::Trigo, 0});
@@ -48,6 +49,7 @@ void Inventory::close() {
 void Inventory::show() const {
     printf("Recursos restantes:\n");
     for (auto const& resource: resources) {
+        if (resource.first == Resource::Null) continue;
         std::string r_name = ResourceName::get_name(resource.first);
         printf("  - %s: %lu\n", r_name.c_str(), resource.second);
     }

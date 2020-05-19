@@ -6,7 +6,8 @@ const std::unordered_map<Resource, std::string> ResourceName::names {
     { Resource::Carbon, "Carbon" },
     { Resource::Madera, "Madera" },
     { Resource::Hierro, "Hierro" },
-    { Resource::Trigo, "Trigo" }
+    { Resource::Trigo, "Trigo" },
+    { Resource::Null, "NULL" },
 };
 
 std::string ResourceName::get_name(Resource resource) {

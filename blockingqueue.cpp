@@ -15,6 +15,8 @@ Resource BlockingQueue::pop() {
     queue_cv.wait(lk, [&] {
         return !this->is_empty() || this->is_done();
     });
+    if (is_empty())
+        return Resource::Null;
     Resource frente = resources.front();
     resources.pop_front();
     return frente;

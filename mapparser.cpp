@@ -9,6 +9,7 @@ void MapParser::parse(GathererHandler& gatherers) {
         std::getline(stream, line);
         for (auto c: line) {
             Resource resource = ResourceName::get_resource(c);
+            if (resource == Resource::Null) continue;
             gatherers.push_resource(resource);
         }
     } while (!line.empty());
