@@ -5,7 +5,7 @@
 
 class ProfitPointsCounter {
 private:
-    size_t profit_points;
+    std::size_t profit_points;
     std::mutex mtx;
 public:
     ProfitPointsCounter(): profit_points(0) {}

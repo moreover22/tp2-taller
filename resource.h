@@ -2,7 +2,7 @@
 #define RESOURCE_H
 
 #include <mutex>
-#include <unordered_map>
+#include <map>
 #include <string>
 
 enum class Resource {
@@ -13,13 +13,21 @@ enum class Resource {
     Null
 };
 
+struct ResourceHash {
+    std::size_t operator()(Resource r) const{
+        return static_cast<std::size_t>(r);
+    }
+};
+
 class ResourceName {
 private:
-    const static std::unordered_map<Resource, std::string> names;
+    const static std::map<Resource, std::string> names;
     ResourceName();
 public:
     static std::string get_name(Resource resource);
     static Resource get_resource(char resourceChar);
 };
+
+
 
 #endif

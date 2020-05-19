@@ -1,8 +1,5 @@
 #include <iostream>
-#include <map>
-#include <unordered_map>
 #include <string>
-#include <unordered_set>
 
 #include "inventory.h"
 #include "profitpointscounter.h"
@@ -16,6 +13,7 @@
 #define MAP_FILE_INDEX 2
 
 #define ERROR 1
+#define SUCCESS 0
 
 bool parse_workers(const char * path_file, GathererHandler& gatherers, 
                                                 ProducerHandler& producers) {
@@ -48,6 +46,7 @@ int main(int argc, const char** argv) {
         std::cerr << "No se pudo abrir el archivo de trabajadores" << std::endl;
         return ERROR;
     }
+
     if (!parse_map(argv[MAP_FILE_INDEX], gatherers)) {
         std::cerr << "No se pudo abrir el archivo de mapa" << std::endl;
         return ERROR;
@@ -58,4 +57,5 @@ int main(int argc, const char** argv) {
     inventory.show();
     printf("\n");
     pp_counter.show();
+    return SUCCESS;
 }

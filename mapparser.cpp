@@ -2,16 +2,15 @@
 #include "mapparser.h"
 #include "resource.h"
 
-
 void MapParser::parse(GathererHandler& gatherers) {
     std::string line;
-    do {
+    while (!stream.eof()) {
         std::getline(stream, line);
         for (auto c: line) {
             Resource resource = ResourceName::get_resource(c);
-            if (resource == Resource::Null) continue;
-            gatherers.push_resource(resource);
+            if (resource != Resource::Null)
+                gatherers.push_resource(resource);
         }
-    } while (!line.empty());
+    }
     gatherers.queue_done();
 }

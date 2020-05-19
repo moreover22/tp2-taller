@@ -7,5 +7,6 @@ void ProfitPointsCounter::count(int cantidad) {
 }
 
 void ProfitPointsCounter::show() const {
-    printf("Puntos de Beneficio acumulados: %lu\n", profit_points);
+    printf("Puntos de Beneficio acumulados: %u", (unsigned int) profit_points);
+    printf("\n");
 }
