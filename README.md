@@ -11,8 +11,12 @@
 Contenidos
 ---
 - [Introducción](#Introducción)
-- [Conclusión](#Conclusión)
-- [Referencia](#Referencia)
+- [Recolectores y productores](#Recolectores-y-productores)
+- [Archivos](#Archivos)
+- [Acceso a recursos compartidos](#Acceso-a-recursos-compartidos)
+- [Variables condicionales](#Variables-condicionales)
+- [Salida](#Salida)
+
 
 Introducción
 ---
@@ -67,10 +71,77 @@ El `MapParser` adicionalmente, a medida que recorre el mapa, irá encolando los 
 
 Para simplificar el uso de múltiples colas, trabajadores y accesos a inventario, se implementan dos clases contenedoras `GathererHandler` y `ProducerHandler`. Esto permite encapsular el uso de recursos asociados a cada trabajador.
 
+Acceso a recursos compartidos
+---
+
+Tal como se expone en la [sección](#Recolectores-y-productores) de introducción a recolectores y productores, durante la ejecución del programa, habrá accesos a recursos compartidos por diferentes hilos. Esto es, cada `Gatherer` y cada `Producer` (que son hilos), estarán accediendo a los recursos de inventorio, colas bloqueantes y al contador de puntos de beneficio. Esto puede traer inconvenientes cuando un hilo utiliza un recurso y lo modifica y a su vez otro hilo hace lo mismo, por ejemplo:
+
+(Lo siguiente es pseudo código y es caracter meramente ilustrativo)
+
+```
+def pop(cola):
+    if not cola.esta_vacia():
+        cola.pop()
+```
+
+- La cola tiene 1 elemento.
+```
+unHilo::cola.esta_vacia() 
+```
+- Se obtiene false, es decir, un podría hacer un pop.
+
+- Otro hilo toma el control.
+```
+otreoHilo::cola.pop() 
+```
+
+- No hay problema, se vacía la cola.
+
+- Vuelve el primer hilo.
+
+```
+otreoHilo::cola.pop() 
+```
+- No se puede hacer pop porque la cola está vacía.
+
+Por esta razón es que se definen zonas mutamente excluyentes, es decir una porción de código donde no es razonable que dos hilos se ejecuten a la vez. C++ ofrece el mecanismo de `std::mutex` para conseguir esto.
+
+Concretamente, en el trabajo, se definen estás zonas tanto cuando se hace un `push` o `pop` en las colas bloqueantes `BlockingQueue` o en el inventario `Inventory`. Además, como el `ProfitPointsCounter` es compartido por todos los hilos de `Producer`, el método `count` también se encuentra protegido por el correspondiente `mutex`.
+
+Variables condicionales
+---
+
+Los recolectores (`Gatherer`) tienen que esperar a que todo el mapa sea parseado y cargado en la cola bloqueante. Para que el hilo se quede esperando se utiliza las `std::condition_variable` que provee C++ en su librería estándar, y una vez que se cumple la condición (esto es, se puede hacer `pop` de la cola, es decir, la cola no está vacía; o bien, se terminó de parsear el mapa y la cola está vacía) la espera cese y el recolector empiece a trabajar sobre el recurso que eventualmente logre recolectar.
+
+En el caso de los productores (`Producer`), estos deben esperar que:
+
+- Se puedan extraer recursos del inventario (esto es, que el mismo no esté vacío).
+- Esos recursos sean los que el productor necesita.
+
+Eventualmente, si el inventario se cierra (esto es, los recolectores no tiene más materia para recolectar) y los productores no tienen los recursos necesarios en el inventario para producir, los productores finalizarán de trabajar.
+
+Salida
+---
+
+Una vez que todos los trabajadores hayan dejado de trabajar (ejecutado el método `run`), se procede a mostrar por `stdout` los resultados obtenidos, esto es:
+- El estado final del inventario con los recursos restantes.
+```
+Recursos restantes:
+  - Trigo: <cantidad de trigo restante>
+  - Madera: <cantidad de madera restante>
+  - Carbon: <cantidad de carbon restante>
+  - Hierro: <cantidad de hierro restante>
+```
+__Observación__: En este caso (por enunciado), se debe respetar el orden, con lo cual, para almacenar esta información se optó por usar un `std::map` frente a un `std::unorder_map`, donde el primero introduce una noción de orden, mientras que el segundo no lo tiene.
+
+- Los puntos de beneficio acumulados.
+```
+Puntos de Beneficio acumulados: <puntos acumulados>
+```
+
+Tanto el primer mensaje como el segundo, son producidos por las entidades que contienen dicha información (`Inventory`, `ProfitPointerCounter` en este caso). Esto permite respetar el encapsulamiento de datos.
 
 <!-- 
-
-Modelo de threading
 
 Consideraciones de cv and mutex
 
