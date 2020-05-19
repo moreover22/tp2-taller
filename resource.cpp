@@ -4,16 +4,12 @@
 #include <map>
 
 const std::map<Resource, std::string> ResourceName::names {
-        { Resource::Carbon, "Carbon" },
-        { Resource::Madera, "Madera" },
-        { Resource::Hierro, "Hierro" },
-        { Resource::Trigo, "Trigo" },
-        { Resource::Null, "NULL" },
-    };
-
-std::string ResourceName::get_name(Resource resource) {
-    return ResourceName::names.at(resource);
-}
+    { Resource::Carbon, "Carbon" },
+    { Resource::Madera, "Madera" },
+    { Resource::Hierro, "Hierro" },
+    { Resource::Trigo, "Trigo" },
+    { Resource::Null, "NULL" },
+};
 
 Resource ResourceName::get_resource(char resourceChar) {
     for (auto& name: names) {
