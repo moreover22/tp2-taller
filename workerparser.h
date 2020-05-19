@@ -12,7 +12,7 @@ private:
 public:
     explicit WorkerParser(std::ifstream& stream): stream(stream) {}
     void parse();
-    size_t get_quantity(const std::string& type) const;
+    size_t get_quantity(const std::string type) const;
 };
 
 #endif

@@ -1,16 +1,13 @@
 #include <iostream>
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
 #include <string>
+#include <unordered_set>
 
 #include "inventory.h"
-#include "resource.h"
-#include "thread.h"
-#include "blockingqueue.h"
-#include "recolector.h"
-#include "producer.h"
 #include "profitpointscounter.h"
-#include "recolectorhandler.h"
+#include "resource.h"
+#include "gathererhandler.h"
 #include "producerhandler.h"
 #include "mapparser.h"
 #include "workerparser.h"
@@ -20,75 +17,45 @@
 
 #define ERROR 1
 
+bool parse_workers(const char * path_file, GathererHandler& gatherers, 
+                                                ProducerHandler& producers) {
+    std::ifstream stream_worker(path_file, std::ios::in);
+    if (!stream_worker.is_open())
+        return false;
+    WorkerParser worker_parser(stream_worker);
+    worker_parser.parse();    
+    gatherers.create_gatherers(worker_parser);
+    producers.create_producers(worker_parser);
+    return true;
+}
+
+bool parse_map(const char * path_file, GathererHandler& gatherers) {    
+    std::ifstream stream_mapa(path_file, std::ios::in);
+    if (!stream_mapa.is_open()) 
+        return false;
+    MapParser map_parser(stream_mapa);
+    map_parser.parse(gatherers);
+    return true;
+}
+
 int main(int argc, const char** argv) {
-    Inventory inventario;
-
-    RecolectorHandler agricultores(inventario);
-    RecolectorHandler leniadores(inventario);
-    RecolectorHandler mineros(inventario);
-
-    std::unordered_map<std::string, RecolectorHandler*> recolectores {
-        { "Agricultores", &agricultores },
-        { "Leniadores", &leniadores },
-        { "Mineros", &mineros }
-    };
-
-    std::map<Resource, RecolectorHandler*> recolectores_por_recurso {
-        { Resource::Trigo, &agricultores },
-        { Resource::Madera, &leniadores },
-        { Resource::Carbon, &mineros },
-        { Resource::Hierro, &mineros }
-    };
-
-    // ProducerHandler cocineros(inventario);
-    // ProducerHandler carpinteros(inventario);
-    // ProducerHandler armeros(inventario);
-
-    // std::unordered_map<std::string, ProducerHandler*> productores {
-    //     { "Cocineros", &cocineros },
-    //     { "Carpinteros", &carpinteros },
-    //     { "Armeros", &armeros }
-    // };
-
-    std::ifstream stream_worker(argv[WORKERS_FILE_INDEX], std::ios::in);
-    if (!stream_worker.is_open()) {
+    Inventory inventory;
+    ProfitPointsCounter pp_counter;
+    GathererHandler gatherers(inventory);
+    ProducerHandler producers(inventory, pp_counter);
+    
+    if (!parse_workers(argv[WORKERS_FILE_INDEX], gatherers, producers)) {
         std::cerr << "No se pudo abrir el archivo de trabajadores" << std::endl;
         return ERROR;
     }
-    
-    WorkerParser worker_parser(stream_worker);
-    worker_parser.parse();
-    
-    for (auto& recolector: recolectores) {
-        size_t cantidad = worker_parser.get_quantity(recolector.first);
-        recolector.second->create_recolecotors(cantidad);
-    }
-    
-    // for (auto& productor: productores) {
-    //     size_t cantidad = worker_parser.get_quantity(productor.first);
-    //     productor.second->create_producers(cantidad);
-    // }
-
-    std::ifstream stream_mapa(argv[MAP_FILE_INDEX], std::ios::in);
-    if (!stream_mapa.is_open()) {
+    if (!parse_map(argv[MAP_FILE_INDEX], gatherers)) {
         std::cerr << "No se pudo abrir el archivo de mapa" << std::endl;
         return ERROR;
     }
-   
-    MapParser map_parser(stream_mapa);
-    map_parser.parse(recolectores_por_recurso);
-
-    for (auto& recolector: recolectores_por_recurso) {
-        recolector.second->queue_done();
-    }
-
-    // for (auto& productor: productores) {
-    //     productor.second->join();
-    // }
-
-    for (auto& recolector: recolectores) {
-        recolector.second->join();
-    }
-    
-    inventario.show();
+    gatherers.join();
+    inventory.close();
+    producers.join();
+    inventory.show();
+    printf("\n");
+    pp_counter.show();
 }

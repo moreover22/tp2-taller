@@ -1,7 +1,6 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-
 #include <mutex>
 #include <unordered_map>
 #include <string>

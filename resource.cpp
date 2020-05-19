@@ -3,7 +3,7 @@
 #include <string>
 
 const std::unordered_map<Resource, std::string> ResourceName::names {
-    { Resource::Carbon, "Carbón" },
+    { Resource::Carbon, "Carbon" },
     { Resource::Madera, "Madera" },
     { Resource::Hierro, "Hierro" },
     { Resource::Trigo, "Trigo" }
