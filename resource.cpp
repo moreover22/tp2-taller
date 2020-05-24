@@ -11,11 +11,12 @@ const std::map<Resource, std::string> ResourceName::names {
     { Resource::Null, "NULL" },
 };
 
-std::string ResourceName::get_name(Resource resource) {
+// no usar copia, usar move
+std::string ResourceName::get_name(Resource resource) { // Resource &resource, std::string&
     return ResourceName::names.at(resource);
 }
 
-Resource ResourceName::get_resource(char resourceChar) {
+Resource ResourceName::get_resource(char resourceChar) { // Resource&
     for (auto& name: names) {
         if (name.second[0] == resourceChar){
             return name.first;

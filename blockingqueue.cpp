@@ -23,10 +23,13 @@ Resource BlockingQueue::pop() {
 }
 
 bool BlockingQueue::is_done() {
+    // no es una funcion atomica
+    
     return queue_done;
 }
 
 bool BlockingQueue::is_empty() {
+    // no es una funcion atomica
     return resources.empty();
 }
 

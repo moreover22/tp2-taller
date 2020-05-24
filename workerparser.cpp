@@ -14,5 +14,6 @@ void WorkerParser::parse() {
 }
 
 size_t WorkerParser::get_quantity(const std::string type) const {
+	// const std::string type -> copia, usar move
     return quantities.at(type);
 }

@@ -14,6 +14,7 @@ void ProducerHandler::create_producers(WorkerParser& parser) {
     }
 }
 
+// no usar copia, usar move
 void ProducerHandler::create_n_producers(std::string type, size_t n) {
     for (size_t i = 0; i < n; ++i)
         producers.push_back(new Producer(type, inventory, counter));

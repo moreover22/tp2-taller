@@ -30,6 +30,7 @@ bool Inventory::pop(ProducerDescription& producer_description) {
 }
 
 bool Inventory::is_empty() {
+    // no es una funcion atomica
     for (auto const& resource: resources) {
         if (resource.second > 0)
             return false;
@@ -38,15 +39,19 @@ bool Inventory::is_empty() {
 }
 
 bool Inventory::is_done() {
+    // no es una funcion atomica
+    
     return is_closed;
 }
 
 void Inventory::close() {
+    // no es una funcion atomica
     is_closed = true;
     cv.notify_all();
 }
 
 void Inventory::show() const {
+    // no es una funcion atomica
     printf("Recursos restantes:\n");
     for (auto const& resource: resources) {
         if (resource.first == Resource::Null) continue;
