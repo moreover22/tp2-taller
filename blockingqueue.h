@@ -17,8 +17,7 @@ public:
     BlockingQueue() : queue_done(false) {}
     void push(Resource resource);
     Resource pop(); 
-    bool is_done();
-    bool is_empty();
+    bool is_ready();    
     void done();
 };
 

@@ -13,6 +13,6 @@ void WorkerParser::parse() {
     } while (!tipo_trabajador.empty()); 
 }
 
-size_t WorkerParser::get_quantity(const std::string type) const {
+size_t WorkerParser::get_quantity(const std::string& type) const {
     return quantities.at(type);
 }

@@ -20,7 +20,7 @@ public:
     void create_recolecotors(size_t n);
     void join();
 
-    void push_resource(Resource resource);
+    void push_resource(Resource& resource);
     void queue_done();
 
     ~RecolectorHandler();

@@ -20,16 +20,14 @@ void Inventory::push(Resource resource) {
 
 bool Inventory::pop(ProducerDescription& producer_description) {
     std::unique_lock<std::mutex> lk(mtx);
-    while (is_empty() && !is_done()) 
-        cv.wait(lk);
-
+    wait_producer(lk);
     if (!producer_description.check_requirements(resources))
         return false;
     producer_description.consume_resources(resources);
     return true;
 }
 
-bool Inventory::is_empty() {
+bool Inventory::_is_empty() {
     for (auto const& resource: resources) {
         if (resource.second > 0)
             return false;
@@ -37,17 +35,25 @@ bool Inventory::is_empty() {
     return true;
 }
 
+void Inventory::wait_producer(std::unique_lock<std::mutex>& lk) {
+    while (_is_empty() && !is_closed) 
+        cv.wait(lk);
+}
+
 bool Inventory::is_done() {
+    std::unique_lock<std::mutex> lk(mtx);
     return is_closed;
 }
 
 void Inventory::close() {
+    std::unique_lock<std::mutex> lk(mtx);
     is_closed = true;
     cv.notify_all();
 }
 
-void Inventory::show() const {
+void Inventory::show() {
     printf("Recursos restantes:\n");
+    std::unique_lock<std::mutex> lk(mtx);
     for (auto const& resource: resources) {
         if (resource.first == Resource::Null) continue;
         std::string r_name = ResourceName::get_name(resource.first);

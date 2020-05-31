@@ -15,7 +15,7 @@ private:
     Inventory& inventory;
     ProfitPointsCounter& counter;
     std::vector<Producer*> producers;
-    void create_n_producers(std::string type, size_t n);
+    void create_n_producers(std::string& type, size_t n);
 public:
     ProducerHandler(Inventory& inventory, ProfitPointsCounter& counter) 
         : inventory(inventory), counter(counter) {}

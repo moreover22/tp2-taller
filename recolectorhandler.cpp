@@ -15,7 +15,7 @@ RecolectorHandler::~RecolectorHandler() {
         delete recolector;
 }
 
-void RecolectorHandler::push_resource(Resource resource) {
+void RecolectorHandler::push_resource(Resource& resource) {
     cola.push(resource);
 }
 

@@ -13,21 +13,18 @@ void BlockingQueue::push(Resource resource) {
 Resource BlockingQueue::pop() {
     std::unique_lock<std::mutex> lk(mtx);
     queue_cv.wait(lk, [&] {
-        return !this->is_empty() || this->is_done();
+        return !resources.empty() || queue_done;
     });
-    if (is_empty())
+    if (resources.empty())
         return Resource::Null;
     Resource frente = resources.front();
     resources.pop_front();
     return frente;
 }
 
-bool BlockingQueue::is_done() {
-    return queue_done;
-}
-
-bool BlockingQueue::is_empty() {
-    return resources.empty();
+bool BlockingQueue::is_ready() {
+    std::unique_lock<std::mutex> lk(mtx);
+    return resources.empty() && queue_done;
 }
 
 void BlockingQueue::done() {

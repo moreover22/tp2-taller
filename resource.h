@@ -17,8 +17,8 @@ private:
     const static std::map<Resource, std::string> names;
     ResourceName();
 public:
-    static std::string get_name(Resource resource);
-    static Resource get_resource(char resourceChar);
+    static std::string get_name(const Resource& resource);
+    static const Resource& get_resource(char resourceChar);
 };
 
 #endif

@@ -8,13 +8,13 @@ void ProducerHandler::create_producers(WorkerParser& parser) {
         "Carpinteros",
         "Armeros" 
     };
-    for (const auto producer_type : producers_type) {
+    for (auto& producer_type : producers_type) {
         size_t cantidad = parser.get_quantity(producer_type);
         create_n_producers(producer_type, cantidad);
     }
 }
 
-void ProducerHandler::create_n_producers(std::string type, size_t n) {
+void ProducerHandler::create_n_producers(std::string& type, size_t n) {
     for (size_t i = 0; i < n; ++i)
         producers.push_back(new Producer(type, inventory, counter));
 }
